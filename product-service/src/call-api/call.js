@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 // const fetchBrands = require('./brand');
 // const fetchColor = require('./color');
 // const fetchSize = require('./size');
-const getCategory = require('./category');
+const getProduct = require('./product');
 // call parallel api
 async function main() {
   const connectMongoose = async () => {
@@ -17,7 +17,7 @@ async function main() {
     // await fetchBrands();
     // await fetchColor();
     // await fetchSize();
-    await getCategory();
+    await getProduct();
   };
 
   await Promise.allSettled([createTaskList]);

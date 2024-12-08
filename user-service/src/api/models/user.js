@@ -19,12 +19,7 @@ const userSchema = new Schema(
     date_of_birth: Date,
     telephoneNumber: String,
     avatar: String,
-    address: {
-      home_number: String,
-      commune: String,
-      state: String,
-      city: String,
-    },
+    address: String,
     role: {
       type: String,
       enum: ['user', 'admin'],

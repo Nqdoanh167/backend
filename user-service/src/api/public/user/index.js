@@ -14,4 +14,8 @@ router.get('/:id', query({}), FactoryController.show(User));
 router.put('/:id', body(userUpdateDto), FactoryController.update(User));
 router.delete('/:id', FactoryController.destroy(User));
 
+// me
+
+router.put('/me', body(userUpdateDto), FactoryController.update(User));
+
 module.exports = router;

@@ -8,7 +8,6 @@ const shipmentSchema = new Schema(
     size_code: {
       type: String,
       required: true,
-      unique: true,
     },
   },
   {

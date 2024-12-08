@@ -14,7 +14,6 @@ router.get(
     status: {
       type: String,
       paths: ['status'],
-      default: 'active',
     },
   }),
   index,

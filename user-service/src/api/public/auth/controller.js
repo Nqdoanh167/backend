@@ -134,4 +134,37 @@ const generateToken = async (user, res) => {
   return token;
 };
 
-module.exports = {login, register};
+const getToken = async (req, res, next) => {
+  const {token} = req.body;
+
+  if (!token) {
+    return res.status(400).json({message: 'Token is required'});
+  }
+
+  try {
+    // Giải mã token
+    const {user} = jwt.verify(token, config.jwtSecret);
+
+    // Trả thông tin người dùng (chỉ trả các thông tin cần thiết)
+    res.json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return res.status(403).json({success: false, message: 'Invalid or expired token', error: error.message});
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    res.clearCookie('jwt');
+    return res.json({
+      data: null,
+      status: 200,
+      statusText: 'SUCCESS',
+      message: 'Logout success',
+    });
+  } catch (error) {}
+};
+
+module.exports = {login, register, getToken, logout};

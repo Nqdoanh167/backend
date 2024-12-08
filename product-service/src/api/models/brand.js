@@ -35,6 +35,7 @@ const brandCreateDto = {
   thumbnail: Brand.schema.tree.thumbnail,
 };
 const brandUpdateDto = {
+  name: Brand.schema.tree.name,
   thumbnail: Brand.schema.tree.thumbnail,
 };
 module.exports = {

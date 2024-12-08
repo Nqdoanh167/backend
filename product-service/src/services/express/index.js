@@ -10,7 +10,12 @@ const {env} = require('../../config');
 module.exports = (apiRoot, routes) => {
   const app = express();
   if (['production', 'development', 'beta'].includes(env)) {
-    app.use(cors());
+    app.use(
+      cors({
+        origin: true, // URL của React app
+        credentials: true, // Cho phép gửi cookie
+      }),
+    );
     app.use(compression());
     app.use(morgan('dev'));
   }
