@@ -6,10 +6,11 @@ const {middleware: query} = require('querymen');
 const {Cart, cartCreateDTO} = require('../../models/cart');
 const FactoryController = require('../../../services/factory');
 const {index, destroy, create} = require('./controller');
+const {token} = require('../../../services/auth');
 const router = new Router();
 
-router.post('/', body(cartCreateDTO), create);
-router.get('/', query({}), index);
-router.delete('/:id', FactoryController.destroy(Cart));
+router.post('/', token, body(cartCreateDTO), create);
+router.get('/', token, query({}), index);
+router.delete('/:id', token, FactoryController.destroy(Cart));
 
 module.exports = router;

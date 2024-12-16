@@ -30,6 +30,11 @@ const create = ({bodymen: {body}}, res, next) => {
 };
 
 const index = ({querymen: {query, select, cursor}}, res, next) => {
+  const {search} = query;
+  if (search) {
+    query.$text = {$search: search};
+    delete query.search;
+  }
   Product.countDocuments(query)
     .lean()
     .then((total) => {
@@ -190,4 +195,22 @@ const getManyByVariantCodes = ({params, querymen: {query, select, cursor}}, res,
     .catch(next);
 };
 
-module.exports = {create, index, show, update, destroy, getManyByVariantCodes, getByVariantCode};
+const getMyWishlist = ({user, querymen: {query, select, cursor}}, res, next) => {
+  query['_id'] = {$in: user.wishList || []};
+  Product.countDocuments(query)
+    .lean()
+    .then((total) => {
+      if (!total) {
+        return {data: [], total};
+      }
+      return Product.find(query, select, cursor).then((docs) => ({
+        total,
+        results: docs.length,
+        data: docs.map((doc) => doc.view()),
+      }));
+    })
+    .then(success(res))
+    .catch(next);
+};
+
+module.exports = {create, index, show, update, destroy, getManyByVariantCodes, getByVariantCode, getMyWishlist};

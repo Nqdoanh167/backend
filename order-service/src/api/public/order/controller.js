@@ -1,6 +1,7 @@
 /** @format */
 
 const {success} = require('../../../services/response');
+const {generateOrderCode} = require('../../../utils/util');
 const {Order} = require('../../models/order');
 const create = ({bodymen: {body}, user}, res, next) => {
   new Promise(async (resolve, reject) => {
@@ -11,6 +12,7 @@ const create = ({bodymen: {body}, user}, res, next) => {
         }
       });
       body.status = 'created';
+      body.code = generateOrderCode();
       body.updatedBy = {
         _id: user?._id,
         name: user?.name,

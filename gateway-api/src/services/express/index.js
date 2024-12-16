@@ -11,64 +11,33 @@ const cookieParser = require('cookie-parser');
 const httpProxy = require('http-proxy');
 const proxy = httpProxy.createProxyServer();
 
+proxy.on('error', (err, req, res) => {
+  console.error('Proxy error:', err.message);
+  if (!res.headersSent) {
+    res.status(502).json({error: 'Service unavailable'});
+  }
+});
+
 module.exports = (routes) => {
   const app = express();
 
-  app.use('/user-service', (req, res, next) => {
-    try {
-      console.log('Routing request to user service');
-      proxy.web(req, res, {target: 'http://localhost:8001'});
-    } catch (error) {
-      next(error);
-    }
-  });
+  const createProxyRoute = (path, target) => {
+    app.use(path, (req, res, next) => {
+      console.log(`Routing request to ${path}`);
+      proxy.web(req, res, {target}, (err) => {
+        console.error(`Error routing to ${path}:`, err.message);
+        next(err);
+      });
+    });
+  };
 
-  // Route requests to the product service
-  app.use('/product-service', (req, res, next) => {
-    try {
-      console.log('Routing request to product service');
-      proxy.web(req, res, {target: 'http://localhost:8002'});
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  // Route requests to the order service
-  app.use('/order-service', (req, res, next) => {
-    try {
-      console.log('Routing request to order service');
-      proxy.web(req, res, {target: 'http://localhost:8003'});
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  app.use('/review-service', (req, res) => {
-    try {
-      console.log('Routing request to review service');
-      proxy.web(req, res, {target: 'http://localhost:8004'});
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  app.use('/blog-service', (req, res, next) => {
-    try {
-      console.log('Routing request to blog service');
-      proxy.web(req, res, {target: 'http://localhost:8005'});
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  app.use('/cart-service', (req, res, next) => {
-    try {
-      console.log('Routing request to cart service');
-      proxy.web(req, res, {target: 'http://localhost:8006'});
-    } catch (error) {
-      next(error);
-    }
-  });
+  // Định nghĩa các route cho proxy
+  createProxyRoute('/user-service', 'http://localhost:8001');
+  createProxyRoute('/product-service', 'http://localhost:8002');
+  createProxyRoute('/order-service', 'http://localhost:8003');
+  createProxyRoute('/review-service', 'http://localhost:8004');
+  createProxyRoute('/blog-service', 'http://localhost:8005');
+  createProxyRoute('/cart-service', 'http://localhost:8006');
 
   if (['production', 'development', 'beta'].includes(env)) {
     app.use(
@@ -90,15 +59,10 @@ module.exports = (routes) => {
 
   app.use((err, req, res, next) => {
     console.log('err global', err);
-    // res.headersSent: Check xem đã trả dữ liệu cho client chưa. Nếu chưa thì chạy tiếp
     if (!res.headersSent) {
       try {
         let error = JSON.parse(err.message);
         console.log('err', error);
-        // if (error.statusCode) {
-        //   resByCode(res, error.statusCode);
-        // } else if (!isNaN(error.status)) {
-        // }
         res.status(error.status).json({
           status: error.status,
           statusText: 'ERROR',
@@ -107,9 +71,10 @@ module.exports = (routes) => {
           message: error.message,
           data: {},
         });
-      } catch (error) {}
-      if (!res.headersSent) {
-        res.status(400).send(err.message);
+      } catch (parseError) {
+        if (!res.headersSent) {
+          res.status(400).send(err.message);
+        }
       }
     }
   });

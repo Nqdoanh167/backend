@@ -25,6 +25,7 @@ const userSchema = new Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    wishList: [String],
   },
   {
     timestamps: true,
@@ -43,6 +44,7 @@ userSchema.methods = {
       avatar: this.avatar,
       address: this.address,
       role: this.role,
+      wishList: this.wishList,
     };
   },
 };
@@ -75,6 +77,7 @@ const userUpdateDto = {
   telephoneNumber: User.schema.tree.telephoneNumber,
   avatar: User.schema.tree.avatar,
   address: User.schema.tree.address,
+  wishList: User.schema.tree.wishList,
 };
 module.exports = {
   User,

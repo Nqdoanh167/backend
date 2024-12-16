@@ -5,14 +5,13 @@ const {middleware: body} = require('bodymen');
 const {middleware: query} = require('querymen');
 const {Review, reviewCreateDto} = require('../../models/review');
 const FactoryController = require('../../../services/factory');
-const {admin} = require('../../../services/auth');
-const {showOfMe} = require('./controller');
+const {admin, token} = require('../../../services/auth');
+const {myReview} = require('./controller');
 const router = new Router();
 
-router.post('/', body(reviewCreateDto), FactoryController.create(Review));
+router.post('/', token, body(reviewCreateDto), FactoryController.create(Review));
 router.get(
   '/',
-  admin,
   query({
     product_id: {
       type: String,
@@ -22,15 +21,16 @@ router.get(
   FactoryController.index(Review),
 );
 router.get(
-  '/me',
+  '/my-review',
+  token,
   query({
     product_id: {
       type: String,
       path: ['product_id'],
     },
   }),
-  showOfMe,
+  myReview,
 );
-router.delete('/:id', FactoryController.destroy(Review));
+router.delete('/:id', token, FactoryController.destroy(Review));
 
 module.exports = router;

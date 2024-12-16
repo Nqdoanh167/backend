@@ -8,5 +8,6 @@ router.use('/categories', require('./category'));
 router.use('/colors', require('./color'));
 router.use('/sizes', require('./size'));
 router.use('/products', require('./product'));
+router.use('/properties', require('./property'));
 
 module.exports = router;

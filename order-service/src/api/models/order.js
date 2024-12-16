@@ -1,10 +1,15 @@
 /** @format */
 
+const {size, update, create} = require('lodash');
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const orderSchema = new Schema(
   {
+    code: {
+      type: String,
+      unique: true,
+    },
     updatedBy: {
       _id: String,
       name: String,
@@ -17,13 +22,28 @@ const orderSchema = new Schema(
       enum: ['credit_card', 'cod'],
       default: 'cod',
     },
+    feeDelivery: {
+      type: Number,
+      default: 0,
+    },
     items: [
       {
-        variant_code: String,
+        code: String,
+        title: String,
+        image: String,
+        color: String,
+        size: String,
         quantity: Number,
         price: Number,
+        inventory: Number,
       },
     ],
+    customer: {
+      _id: String,
+      name: String,
+      address: String,
+      telephoneNumber: String,
+    },
   },
   {
     timestamps: true,
@@ -39,6 +59,11 @@ orderSchema.methods = {
       status: this.status,
       payment_type: this.payment_type,
       items: this.items,
+      customer: this.customer,
+      updatedAt: this.updatedAt,
+      createdAt: this.createdAt,
+      code: this.code,
+      feeDelivery: this.feeDelivery,
     };
   },
 };
@@ -48,9 +73,20 @@ const orderCreateDTO = {
   total_price: Order.schema.tree.total_price,
   payment_type: Order.schema.tree.payment_type,
   items: Order.schema.tree.items,
+  customer: Order.schema.tree.customer,
+  feeDelivery: Order.schema.tree.feeDelivery,
+};
+const orderUpdateDTO = {
+  total_price: Order.schema.tree.total_price,
+  payment_type: Order.schema.tree.payment_type,
+  items: Order.schema.tree.items,
+  customer: Order.schema.tree.customer,
+  status: Order.schema.tree.status,
+  feeDelivery: Order.schema.tree.feeDelivery,
 };
 
 module.exports = {
   Order,
   orderCreateDTO,
+  orderUpdateDTO,
 };

@@ -21,7 +21,8 @@ const token = async (req, res, next) => {
   if (authHeader) {
     token = authHeader.split(' ')[1];
   }
-  if (req.cookies.jwt) {
+  console.log('dasssssssss', req.cookie);
+  if (req.cookies?.jwt) {
     token = req.cookies.jwt;
   }
 

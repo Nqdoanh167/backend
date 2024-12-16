@@ -4,20 +4,63 @@ const {Router} = require('express');
 const {middleware: body} = require('bodymen');
 const {middleware: query} = require('querymen');
 const {productCreateDto, productUpdateDto} = require('../../models/product');
+const {token, admin} = require('../../../services/auth');
 const router = new Router();
-const {create, index, show, update, destroy, getManyByVariantCodes, getByVariantCode} = require('./controller');
+const {
+  create,
+  index,
+  show,
+  update,
+  destroy,
+  getManyByVariantCodes,
+  getByVariantCode,
+  getMyWishlist,
+} = require('./controller');
 
-router.post('/', body(productCreateDto), create);
+router.get('/my-wishlist', token, query({}), getMyWishlist);
+router.post('/', token, admin, body(productCreateDto), create);
 router.get(
   '/',
   query({
+    page: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
+      type: Number,
+      default: 20,
+    },
     status: {
       type: String,
       paths: ['status'],
     },
+    search: {
+      type: String,
+      paths: ['search'],
+    },
+    ids: {
+      type: Array,
+      paths: ['_id'],
+    },
+    sort: {
+      type: String,
+      paths: ['createdAt'],
+      default: '-createdAt',
+    },
   }),
   index,
 );
+router.get(
+  '/variants',
+  query({
+    codes: {
+      type: [String],
+      paths: ['variants.code'],
+    },
+  }),
+  getManyByVariantCodes,
+);
+
 router.get(
   '/:slug',
   query({
@@ -27,18 +70,8 @@ router.get(
   }),
   show,
 );
-// router.get('/variants/:code', getByVariantCode);
-router.get(
-  '/variants/codes',
-  query({
-    codes: {
-      type: [String],
-      paths: ['variants.code'],
-    },
-  }),
-  getManyByVariantCodes,
-);
-router.put('/:id', body(productUpdateDto), update);
-router.delete('/:id', destroy);
+
+router.put('/:id', token, admin, body(productUpdateDto), update);
+router.delete('/:id', token, admin, destroy);
 
 module.exports = router;

@@ -6,6 +6,13 @@ const generateCode = () => {
   return timestamp + randomDigits;
 };
 
+function generateOrderCode() {
+  const prefix = 'DH';
+  const randomNumber = Math.floor(100000 + Math.random() * 900000); // Tạo số ngẫu nhiên có 6 chữ số
+  return `${prefix}${randomNumber}`;
+}
+
 module.exports = {
   generateCode,
+  generateOrderCode,
 };

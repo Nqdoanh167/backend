@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const {generateCode} = require('../../utils/util');
 const {Schema} = mongoose;
+const {ObjectId} = Schema.Types;
 
 const productSchema = new Schema(
   {
@@ -17,7 +18,7 @@ const productSchema = new Schema(
     description: {
       type: String,
     },
-    category: String,
+    category: ObjectId,
     brand: String,
     averageRating: {
       type: Number,
@@ -77,6 +78,8 @@ productSchema.pre('save', function (next) {
   this.slug = this.title.toLowerCase().replace(/ /g, '-');
   next();
 });
+
+productSchema.index({title: 'text', slug: 'text', description: 'text'});
 
 productSchema.methods = {
   view() {

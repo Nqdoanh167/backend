@@ -45,7 +45,15 @@ const blogCreateDto = {
   content: Blog.schema.tree.content,
   image: Blog.schema.tree.image,
 };
+const blogUpdateDto = {
+  title: Blog.schema.tree.title,
+  author_name: Blog.schema.tree.author_name,
+  summary: Blog.schema.tree.summary,
+  content: Blog.schema.tree.content,
+  image: Blog.schema.tree.image,
+};
 module.exports = {
   Blog,
   blogCreateDto,
+  blogUpdateDto,
 };

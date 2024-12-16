@@ -7,7 +7,7 @@ const {token} = require('../services/auth');
 
 const router = new Router();
 
-router.use('/', token, apiPublic);
+router.use('/', apiPublic);
 router.use('/upload', apiUpload);
 
 module.exports = router;

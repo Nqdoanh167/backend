@@ -3,6 +3,6 @@
 const {Router} = require('express');
 const router = new Router();
 
-router.use('/', require('./order'));
+router.use('/orders', require('./order'));
 
 module.exports = router;

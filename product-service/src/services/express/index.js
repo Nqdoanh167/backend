@@ -7,6 +7,8 @@ const morgan = require('morgan');
 const {errorHandler: bodyErrorHandler} = require('bodymen');
 const {errorHandler: queryErrorHandler} = require('querymen');
 const {env} = require('../../config');
+const {default: mongoose} = require('mongoose');
+const cookieParser = require('cookie-parser');
 module.exports = (apiRoot, routes) => {
   const app = express();
   if (['production', 'development', 'beta'].includes(env)) {
@@ -18,10 +20,12 @@ module.exports = (apiRoot, routes) => {
     );
     app.use(compression());
     app.use(morgan('dev'));
+    mongoose.set('debug', true);
   }
 
   app.use(express.urlencoded({extended: false}));
   app.use(express.json());
+  app.use(cookieParser());
   app.use(apiRoot, routes);
   app.use(queryErrorHandler);
   app.use(bodyErrorHandler);

@@ -5,12 +5,20 @@ const {Schema} = mongoose;
 
 const cartSchema = new Schema(
   {
-    variant_code: String,
-    quantity: Number,
     updatedBy: {
       _id: String,
       name: String,
       avatar: String,
+    },
+    quantity: Number,
+    item: {
+      code: String,
+      title: String,
+      image: String,
+      color: String,
+      size: String,
+      price: Number,
+      inventory: Number,
     },
   },
   {
@@ -22,18 +30,18 @@ cartSchema.methods = {
   view() {
     return {
       _id: this._id,
-      variant_code: this.variant_code,
       quantity: this.quantity,
       updatedBy: this.updatedBy,
+      item: this.item,
     };
   },
 };
 
 const Cart = mongoose.model('Cart', cartSchema);
 const cartCreateDTO = {
-  variant_code: Cart.schema.tree.variant_code,
   quantity: Cart.schema.tree.quantity,
   updatedBy: Cart.schema.tree.updatedBy,
+  item: Cart.schema.tree.item,
 };
 
 module.exports = {
