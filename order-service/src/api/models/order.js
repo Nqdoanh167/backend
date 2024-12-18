@@ -16,7 +16,15 @@ const orderSchema = new Schema(
       avatar: String,
     },
     total_price: Number,
-    status: String,
+    status: {
+      type: String,
+      enum: ['created', 'confirmed', 'shipping', 'delivered', 'canceled'],
+      default: 'created',
+    },
+    isShipment: {
+      type: Boolean,
+      default: false,
+    },
     payment_type: {
       type: String,
       enum: ['credit_card', 'cod'],
@@ -35,7 +43,6 @@ const orderSchema = new Schema(
         size: String,
         quantity: Number,
         price: Number,
-        inventory: Number,
       },
     ],
     customer: {
@@ -49,6 +56,11 @@ const orderSchema = new Schema(
     timestamps: true,
   },
 );
+
+orderSchema.pre('save', function (next) {
+  this.isShipment = ['shipping', 'delivered', 'canceled'].includes(this.status);
+  next();
+});
 
 orderSchema.methods = {
   view() {
@@ -64,6 +76,7 @@ orderSchema.methods = {
       createdAt: this.createdAt,
       code: this.code,
       feeDelivery: this.feeDelivery,
+      isShipment: this.isShipment,
     };
   },
 };
@@ -83,6 +96,7 @@ const orderUpdateDTO = {
   customer: Order.schema.tree.customer,
   status: Order.schema.tree.status,
   feeDelivery: Order.schema.tree.feeDelivery,
+  isShipment: String,
 };
 
 module.exports = {

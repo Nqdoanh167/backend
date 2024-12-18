@@ -175,6 +175,11 @@ const getManyByVariantCodes = ({params, querymen: {query, select, cursor}}, res,
       $match: query, // Lọc theo điều kiện sản phẩm
     },
     {
+      $match: {
+        'variants.inventory': {$gt: 0},
+      },
+    },
+    {
       $project: {
         title: 1,
         code: '$variants.code',
