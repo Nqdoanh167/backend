@@ -11,10 +11,22 @@ const create = ({bodymen: {body}, user}, res, next) => {
         }
       });
       const item = await Cart.findOne({
-        variant_code: body.variant_code,
+        'item.code': body.item.code,
+        'updatedBy._id': user?._id,
       });
       if (item) {
         item.quantity += body.quantity;
+        if (item.quantity >= item.item.inventory) {
+          return reject(
+            new Error(
+              JSON.stringify({
+                status: 400,
+                statusText: 'BAD_REQUEST',
+                message: 'Không thể thêm số lượng đã chọn vào giỏ hàng vì sẽ vượt quá giới hạn mua hàng của bạn',
+              }),
+            ),
+          );
+        }
         return resolve(item.save());
       }
 
@@ -58,7 +70,16 @@ const index = ({querymen: {query, select, cursor}, user}, res, next) => {
     .catch(next);
 };
 
+const deleteMulti = async ({querymen: {query}, user}, res, next) => {
+  query['updatedBy._id'] = user?._id;
+  Cart.deleteMany(query)
+    .then((data) => ({data}))
+    .then(success(res))
+    .catch(next);
+};
+
 module.exports = {
   index,
   create,
+  deleteMulti,
 };

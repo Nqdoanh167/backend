@@ -38,6 +38,7 @@ module.exports = (routes) => {
   createProxyRoute('/review-service', 'http://localhost:8004');
   createProxyRoute('/blog-service', 'http://localhost:8005');
   createProxyRoute('/cart-service', 'http://localhost:8006');
+  createProxyRoute('/shipment-service', 'http://localhost:8007');
 
   if (['production', 'development', 'beta'].includes(env)) {
     app.use(

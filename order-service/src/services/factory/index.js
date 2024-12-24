@@ -11,7 +11,12 @@ const create =
             delete body[key];
           }
         });
-        body.user_id = user._id;
+        body.updatedBy = {
+          _id: user?._id,
+          name: user?.name,
+          avatar: user?.avatar,
+        };
+
         return resolve(Model.create(body));
       } catch (error) {
         return reject(
@@ -59,7 +64,7 @@ const show =
 
 const update =
   (Model) =>
-  ({bodymen: {body}, params}, res, next) => {
+  ({user, bodymen: {body}, params}, res, next) => {
     new Promise(async (resolve, reject) => {
       try {
         Object.keys(body).forEach((key) => {
@@ -77,6 +82,12 @@ const update =
             ),
           );
         }
+
+        body.updatedBy = {
+          _id: user?._id,
+          name: user?.name,
+          avatar: user?.avatar,
+        };
 
         return resolve(Object.assign(item, body).save());
       } catch (error) {

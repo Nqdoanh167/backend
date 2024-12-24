@@ -72,8 +72,8 @@ const products = [
   {
     title: 'Olympus pen E-PL9 kit with 14-42, EZ lens, camera',
     description: 'Olympus pen E-PL9 kit with 14-42, EZ lens, camera',
-    category: 'Cameras & Videos',
-    brand: 'sony',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 88000,
     entryPrice: 80000,
     images: [
@@ -103,8 +103,8 @@ const products = [
   {
     title: 'Honor T1 7.0 1 GB RAM 8 GB ROM 7 inch with Wi-Fi+3G Tablet',
     description: 'Honor T1 7.0 1 GB RAM 8 GB ROM 7 inch with Wi-Fi+3G Tablet',
-    category: 'Mobiles & tablets',
-    brand: 'apple',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 90000,
     entryPrice: 80000,
     images: [
@@ -144,8 +144,8 @@ const products = [
   {
     title: 'Beoplay A1 Portable Bluetooth Speaker with Microphone',
     description: 'Beoplay A1 Portable Bluetooth Speaker with Microphone',
-    category: 'Music & Gaming',
-    brand: 'sony',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 50000,
     entryPrice: 45000,
     images: [
@@ -183,8 +183,7 @@ const products = [
   {
     title: 'Milanese Loop Watch Band for 42mm/44mm Apple Watch',
     description: 'Milanese Loop Watch Band for 42mm/44mm Apple Watch',
-    category: 'Smartwatches',
-    brand: 'apple',
+    category: '671e27a677e97453ac8eaa1a',
     price: 90000,
     entryPrice: 85000,
     images: [
@@ -214,8 +213,7 @@ const products = [
   {
     title: 'Apple AirPods Max 2020 with Smart Case – Blue',
     description: 'Apple AirPods Max 2020 with Smart Case – Blue',
-    category: 'Headphones',
-    brand: 'apple',
+    category: '671e27a677e97453ac8eaa1a',
     price: 120000,
     entryPrice: 100000,
     images: [
@@ -246,8 +244,8 @@ const products = [
   {
     title: 'Samsung Galaxy Note10+ Mobile Phone; Sim Free Smartphone',
     description: 'Samsung Galaxy Note10+ Mobile Phone; Sim Free Smartphone',
-    category: 'Mobiles & tablets',
-    brand: 'samsung',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 88000,
     entryPrice: 80000,
     images: ['https://demo-digitic.myshopify.com/cdn/shop/products/01_287x.jpg?v=1655094851'],
@@ -274,8 +272,8 @@ const products = [
   {
     title: 'Samsung Galaxy Tab A SM-T295, 4G Factory Unlocked',
     description: 'Samsung Galaxy Tab A SM-T295, 4G Factory Unlocked',
-    category: 'Mobiles & tablets',
-    brand: 'samsung',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 88000,
     entryPrice: 80000,
     images: [
@@ -306,8 +304,8 @@ const products = [
   {
     title: 'New Upgraded 2K 1080P Streaming Webcam with Ring Light',
     description: 'New Upgraded 2K 1080P Streaming Webcam with Ring Light',
-    category: 'Cameras & Videos',
-    brand: '',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 88000,
     entryPrice: 80000,
     images: [
@@ -337,8 +335,8 @@ const products = [
   {
     title: 'Hero Session Action Camera with 8MP Photos',
     description: 'Hero Session Action Camera with 8MP Photos',
-    category: 'Cameras & Videos',
-    brand: 'sony',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 88000,
     entryPrice: 80000,
     images: [
@@ -368,8 +366,8 @@ const products = [
   {
     title: 'Samsung Galaxy A23 128GB 6GB RAM Purple Color',
     description: 'Samsung Galaxy A23 128GB 6GB RAM Purple Color',
-    category: 'Mobiles & tablets',
-    brand: 'samsung',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 88000,
     entryPrice: 80000,
     images: [
@@ -399,8 +397,8 @@ const products = [
   {
     title: 'Smart Watch for Android iPhone, Bluetooth Phone Calls',
     description: 'Smart Watch for Android iPhone, Bluetooth Phone Calls',
-    category: 'Mobiles & tablets',
-    brand: 'apple',
+    category: '671e27a677e97453ac8eaa1a',
+    brand: '671ca08a0f6bb9337fb5dbb1',
     price: 88000,
     entryPrice: 80000,
     images: [

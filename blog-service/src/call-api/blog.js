@@ -47,7 +47,7 @@ module.exports = fetchBolg = blogs.map((blog) => {
   myHeaders.append('Content-Type', 'application/json');
   myHeaders.append(
     'Authorization',
-    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY3NDFlYTg0NzdmYjRiYzg0NWE0YzJiYyIsImVtYWlsIjoibnFkY250dDIwMDJAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkYkh5SGNwV3pkVHU5Mm8yUmNFN09OdWlxR01SRW9iY3BJdEZZUWFqbFh0SmpHU0I3TXNCcDYiLCJyb2xlIjoiYWRtaW4iLCJkYXRlX2pvaW5lZCI6IjIwMjQtMTEtMjNUMTQ6NDU6MjQuNjg0WiIsImNyZWF0ZWRBdCI6IjIwMjQtMTEtMjNUMTQ6NDU6MjQuNjg3WiIsInVwZGF0ZWRBdCI6IjIwMjQtMTEtMjNUMTQ6NDU6MjQuNjg3WiIsIl9fdiI6MH0sImlhdCI6MTczMjc1NjE3MiwiZXhwIjoxNzM1MzQ4MTcyfQ.5PZ2_GNY4G8CGm0aLkbo20_ROYu-MtMwqAw1fJnbi_8',
+    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY3NjJkYjRiMjk4YzVmNDM0MDViZmYwZSIsIm5hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkaDhVOXQ2cFcyMDN2M1AuY1Zja2lYT1hRT2lGdWx5by92UGM3ak5oQ3pOaThDckE4TTlBYWUiLCJ0ZWxlcGhvbmVOdW1iZXIiOiIwOTEyNzQ2MjMwIiwicm9sZSI6ImFkbWluIiwid2lzaExpc3QiOltdLCJkYXRlX2pvaW5lZCI6IjIwMjQtMTItMThUMTQ6MjU6MTUuNjQxWiIsImNyZWF0ZWRBdCI6IjIwMjQtMTItMThUMTQ6MjU6MTUuNjQ0WiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMThUMTQ6MjU6MTUuNjQ0WiIsIl9fdiI6MH0sImlhdCI6MTczNDUzMzExOSwiZXhwIjoxNzM3MTI1MTE5fQ.MhH_oBnwW68eRCLRZ3x8QwXcpRxxEn1pF9TC64AZxD0',
   );
 
   const raw = JSON.stringify(blog);
@@ -59,7 +59,7 @@ module.exports = fetchBolg = blogs.map((blog) => {
     redirect: 'follow',
   };
 
-  fetch('http://localhost:8000/blog-service/api', requestOptions)
+  fetch('http://localhost:8000/blog-service/api/blogs', requestOptions)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));

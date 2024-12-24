@@ -8,6 +8,7 @@ const {errorHandler: bodyErrorHandler} = require('bodymen');
 const {errorHandler: queryErrorHandler} = require('querymen');
 const {env} = require('../../config');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 module.exports = (apiRoot, routes) => {
   const app = express();
   if (['production', 'development', 'beta'].includes(env)) {
@@ -19,6 +20,7 @@ module.exports = (apiRoot, routes) => {
     );
     app.use(compression());
     app.use(morgan('dev'));
+    mongoose.set('debug', true);
   }
 
   app.use(express.urlencoded({extended: false}));

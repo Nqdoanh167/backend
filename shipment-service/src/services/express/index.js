@@ -8,17 +8,19 @@ const {errorHandler: bodyErrorHandler} = require('bodymen');
 const {errorHandler: queryErrorHandler} = require('querymen');
 const {env} = require('../../config');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 module.exports = (apiRoot, routes) => {
   const app = express();
   if (['production', 'development', 'beta'].includes(env)) {
     app.use(
       cors({
-        origin: 'http://localhost:3000', // URL của React app
+        origin: true, // URL của React app
         credentials: true, // Cho phép gửi cookie
       }),
     );
     app.use(compression());
     app.use(morgan('dev'));
+    mongoose.set('debug', true);
   }
 
   app.use(express.urlencoded({extended: false}));

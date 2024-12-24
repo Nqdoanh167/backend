@@ -1,6 +1,7 @@
 /** @format */
 const axios = require('axios');
-const config = require('../../config');
+const {jwtSecret} = require('../../config');
+const jwt = require('jsonwebtoken');
 const getUserInfo = async (token) => {
   try {
     const response = await axios.post(`http://localhost:8000/user-service/api/auth/get-token`, {token});
@@ -52,4 +53,14 @@ const admin = async (req, res, next) => {
     res.status(500).json({message: 'Internal server error.'});
   }
 };
-module.exports = {token, admin};
+
+const getUserByToken = (token) => {
+  try {
+    const data = jwt.verify(token, jwtSecret);
+    return data;
+  } catch (error) {
+    console.error('Invalid token:', error);
+    throw new Error('Invalid token');
+  }
+};
+module.exports = {token, admin, getUserInfo, getUserByToken};

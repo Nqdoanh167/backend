@@ -1,36 +1,18 @@
 /** @format */
+/** @format */
 
 const {Router} = require('express');
 const {middleware: body} = require('bodymen');
 const {middleware: query} = require('querymen');
-const {Review, reviewCreateDto} = require('../../models/review');
+const {Shipment, shipmentCreateDto, shipmentUpdateDto} = require('../../models/shipment');
 const FactoryController = require('../../../services/factory');
-const {admin} = require('../../../services/auth');
-const {showOfMe} = require('./controller');
+const {admin, token} = require('../../../services/auth');
+const {create, update} = require('./controller');
 const router = new Router();
 
-router.post('/', body(reviewCreateDto), FactoryController.create(Review));
-router.get(
-  '/',
-  admin,
-  query({
-    product_id: {
-      type: String,
-      path: ['product_id'],
-    },
-  }),
-  FactoryController.index(Review),
-);
-router.get(
-  '/me',
-  query({
-    product_id: {
-      type: String,
-      path: ['product_id'],
-    },
-  }),
-  showOfMe,
-);
-router.delete('/:id', FactoryController.destroy(Review));
+router.post('/', token, body(shipmentCreateDto), create);
+router.get('/', query({}), FactoryController.index(Shipment));
+router.put('/:id', token, body(shipmentUpdateDto), update);
+router.delete('/:id', token, FactoryController.destroy(Shipment));
 
 module.exports = router;

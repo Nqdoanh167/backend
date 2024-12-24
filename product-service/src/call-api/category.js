@@ -56,7 +56,7 @@ module.exports = fetchcategorys = categories.map((category) => {
     redirect: 'follow',
   };
 
-  fetch('http://localhost:8386/api/product-service/categories', requestOptions)
+  fetch('http://localhost:8000/product-service/api/categories', requestOptions)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));

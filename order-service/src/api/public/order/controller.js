@@ -4,6 +4,9 @@ const {success} = require('../../../services/response');
 const {generateOrderCode} = require('../../../utils/util');
 const {Order} = require('../../models/order');
 const productService = require('../../../services/axios/product');
+const shipmentService = require('../../../services/axios/shipment');
+const {getIO} = require('../../../services/socket');
+const EmailService = require('../../../services/mail');
 const create = ({bodymen: {body}, user}, res, next) => {
   new Promise(async (resolve, reject) => {
     try {
@@ -12,8 +15,10 @@ const create = ({bodymen: {body}, user}, res, next) => {
           delete body[key];
         }
       });
-      body.status = 'created';
+      if (!body.status) body.status = 'created';
+      if (!body.payment_type) body.payment_type = 'cod';
       body.code = generateOrderCode();
+      body.customer._id = user?._id;
       body.updatedBy = {
         _id: user?._id,
         name: user?.name,
@@ -35,7 +40,35 @@ const create = ({bodymen: {body}, user}, res, next) => {
     .then((item) => ({data: item.view()}))
     .then(success(res))
     .then(async (res) => {
-      await updateProduct(res?.data);
+      if (res.data.isShipment) {
+        await updateProduct(res.data);
+        await shipmentService.createOne({
+          carrier: res.data.carrier,
+          cod: res.data.total_price,
+          order: {
+            _id: res.data._id,
+            code: res.data.code,
+            items: res.data.items,
+            customer: res.data.customer,
+          },
+        });
+
+        console.log('dasssssssssssss');
+        const url = `http://localhost:3000/order/${res.data._id}`;
+        await new EmailService(res.data.customer, url)
+          .sendWelcome()
+          .then(() => {
+            console.log('send mail success');
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        console.log('dasssssssssssss');
+        // io.to(res.data.customer?._id).emit('ORDER_CREATED', {
+        //   order: res.data,
+        //   message: `Đơn hàng ${res.data.code} đã tạo thành công!`,
+        // });
+      }
     })
     .catch(next);
 };
@@ -62,8 +95,14 @@ const update = ({params, bodymen: {body}, user}, res, next) => {
         );
       }
 
-      const bodyUpdate = {...body};
-      if (order.isShipment) {
+      let bodyUpdate = {
+        ...body,
+        customer: {
+          ...order.customer,
+          ...body.customer,
+        },
+      };
+      if (order.isShipment || order.status === 'confirmed') {
         bodyUpdate = {
           status: body.status,
         };
@@ -90,7 +129,36 @@ const update = ({params, bodymen: {body}, user}, res, next) => {
     .then((item) => ({data: item.view()}))
     .then(success(res))
     .then(async (res) => {
-      await updateProduct(res?.data);
+      if (res.data.isShipment) {
+        await updateProduct(res.data);
+        await shipmentService.createOne({
+          carrier: res.data.carrier,
+          cod: res.data.total_price,
+          order: {
+            _id: res.data._id,
+            code: res.data.code,
+            items: res.data.items,
+            customer: res.data.customer,
+          },
+        });
+
+        const io = getIO();
+        io.to(res.data.customer?._id).emit('ORDER_UPDATED', {
+          order: res.data,
+          message: `Đơn hàng ${res.data.code} đã cập nhật thành công!`,
+        });
+
+        if (res.data.status === 'completed') {
+          await new EmailService(res.data.customer)
+            .notifyOrder()
+            .then(() => {
+              console.log('send mail success');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
     })
     .catch(next);
 };

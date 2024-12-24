@@ -1,0 +1,17 @@
+extends baseEmail
+
+block content
+  p Chào #{to},
+  p Chào mừng bạn đến với D-SHOP, rất vui được đồng hành cùng bạn 🎉🙏
+  p Chúng ta đều là một gia đình lớn, vì vậy hãy chắc chắn tải lên ảnh đại diện của bạn để mọi người có thể làm quen với bạn nhé!
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Tải ảnh đại diện
+  p Nếu bạn cần bất kỳ sự trợ giúp nào trong việc mua sắm hoặc sử dụng dịch vụ của D-SHOP, đừng ngần ngại liên hệ với tôi nhé!
+  p - Doanh Dev, CEO

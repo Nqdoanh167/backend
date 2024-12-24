@@ -12,9 +12,47 @@ router.post('/', body(orderCreateDTO), create);
 router.get(
   '/',
   query({
+    limit: {
+      type: Number,
+      default: 20,
+    },
+    page: {
+      type: Number,
+      default: 1,
+    },
     status: {
       type: String,
       paths: ['status'],
+    },
+    price: {
+      type: Array,
+      paths: ['items.price'],
+    },
+    color: {
+      type: Array,
+      paths: ['items.color'],
+    },
+    size: {
+      type: Array,
+      paths: ['items.size'],
+    },
+    'price.from': {
+      type: Number,
+      paths: ['items.price'],
+      operator: '$gte',
+    },
+    'price.to': {
+      type: Number,
+      paths: ['items.price'],
+      operator: '$lte',
+    },
+    color: {
+      type: Array,
+      paths: ['items.color'],
+    },
+    size: {
+      type: Array,
+      paths: ['items.size'],
     },
   }),
   FactoryController.index(Order),

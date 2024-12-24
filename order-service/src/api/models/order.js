@@ -16,23 +16,21 @@ const orderSchema = new Schema(
       avatar: String,
     },
     total_price: Number,
+    carrier: {
+      _id: String,
+      name: String,
+      fee: Number,
+      code: String,
+    },
     status: {
       type: String,
-      enum: ['created', 'confirmed', 'shipping', 'delivered', 'canceled'],
+      enum: ['created', 'confirmed', 'shipping', 'completed', 'canceled'],
       default: 'created',
-    },
-    isShipment: {
-      type: Boolean,
-      default: false,
     },
     payment_type: {
       type: String,
       enum: ['credit_card', 'cod'],
       default: 'cod',
-    },
-    feeDelivery: {
-      type: Number,
-      default: 0,
     },
     items: [
       {
@@ -48,8 +46,18 @@ const orderSchema = new Schema(
     customer: {
       _id: String,
       name: String,
-      address: String,
       telephoneNumber: String,
+      address: String,
+      cityCode: String,
+      districtCode: String,
+      wardCode: String,
+      city: String,
+      district: String,
+      ward: String,
+    },
+    isShipment: {
+      type: Boolean,
+      default: false,
     },
   },
   {
@@ -58,7 +66,7 @@ const orderSchema = new Schema(
 );
 
 orderSchema.pre('save', function (next) {
-  this.isShipment = ['shipping', 'delivered', 'canceled'].includes(this.status);
+  this.isShipment = ['shipping', 'delivered', 'confirmed', 'completed'].includes(this.status);
   next();
 });
 
@@ -75,7 +83,7 @@ orderSchema.methods = {
       updatedAt: this.updatedAt,
       createdAt: this.createdAt,
       code: this.code,
-      feeDelivery: this.feeDelivery,
+      carrier: this.carrier,
       isShipment: this.isShipment,
     };
   },
@@ -87,7 +95,8 @@ const orderCreateDTO = {
   payment_type: Order.schema.tree.payment_type,
   items: Order.schema.tree.items,
   customer: Order.schema.tree.customer,
-  feeDelivery: Order.schema.tree.feeDelivery,
+  carrier: Order.schema.tree.carrier,
+  status: Order.schema.tree.status,
 };
 const orderUpdateDTO = {
   total_price: Order.schema.tree.total_price,
@@ -95,8 +104,7 @@ const orderUpdateDTO = {
   items: Order.schema.tree.items,
   customer: Order.schema.tree.customer,
   status: Order.schema.tree.status,
-  feeDelivery: Order.schema.tree.feeDelivery,
-  isShipment: String,
+  carrier: Order.schema.tree.carrier,
 };
 
 module.exports = {

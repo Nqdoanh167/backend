@@ -36,7 +36,7 @@ module.exports = fetchBrands = brands.map((brand) => {
     redirect: 'follow',
   };
 
-  fetch('http://localhost:8386/api/product-service/brands', requestOptions)
+  fetch('http://localhost:8000/product-service/api/brands', requestOptions)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));

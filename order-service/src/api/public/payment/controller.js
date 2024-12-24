@@ -24,7 +24,6 @@ function sortObject(obj) {
   return sorted;
 }
 const createPaymentUrl = (req, res, next) => {
-  console.log('dsaaaaaaaaaaaaaaaaaaaaaaaaaa');
   try {
     const date = new Date();
     const createDate =

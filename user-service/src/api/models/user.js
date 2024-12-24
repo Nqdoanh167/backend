@@ -20,6 +20,12 @@ const userSchema = new Schema(
     telephoneNumber: String,
     avatar: String,
     address: String,
+    cityCode: String,
+    districtCode: String,
+    wardCode: String,
+    city: String,
+    district: String,
+    ward: String,
     role: {
       type: String,
       enum: ['user', 'admin'],
@@ -45,6 +51,12 @@ userSchema.methods = {
       address: this.address,
       role: this.role,
       wishList: this.wishList,
+      cityCode: this.cityCode,
+      districtCode: this.districtCode,
+      wardCode: this.wardCode,
+      city: this.city,
+      district: this.district,
+      ward: this.ward,
     };
   },
 };
@@ -69,15 +81,32 @@ const userCreateDto = {
   telephoneNumber: User.schema.tree.telephoneNumber,
   avatar: User.schema.tree.avatar,
   address: User.schema.tree.address,
+  role: User.schema.tree.role,
+  wishList: User.schema.tree.wishList,
+  cityCode: User.schema.tree.cityCode,
+  districtCode: User.schema.tree.districtCode,
+  wardCode: User.schema.tree.wardCode,
+  city: User.schema.tree.city,
+  district: User.schema.tree.district,
+  ward: User.schema.tree.ward,
 };
 
 const userUpdateDto = {
+  email: User.schema.tree.email,
+  password: User.schema.tree.password,
   name: User.schema.tree.name,
   date_of_birth: User.schema.tree.date_of_birth,
   telephoneNumber: User.schema.tree.telephoneNumber,
   avatar: User.schema.tree.avatar,
   address: User.schema.tree.address,
+  role: User.schema.tree.role,
   wishList: User.schema.tree.wishList,
+  cityCode: User.schema.tree.cityCode,
+  districtCode: User.schema.tree.districtCode,
+  wardCode: User.schema.tree.wardCode,
+  city: User.schema.tree.city,
+  district: User.schema.tree.district,
+  ward: User.schema.tree.ward,
 };
 module.exports = {
   User,

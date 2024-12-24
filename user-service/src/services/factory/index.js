@@ -11,6 +11,11 @@ const create =
             delete body[key];
           }
         });
+        body.updatedBy = {
+          _id: user?._id,
+          name: user?.name,
+          avatar: user?.avatar,
+        };
         return resolve(Model.create(body));
       } catch (error) {
         return reject(
@@ -58,12 +63,17 @@ const show =
 
 const update =
   (Model) =>
-  ({bodymen: {body}, params}, res, next) => {
+  ({user, bodymen: {body}, params}, res, next) => {
     new Promise(async (resolve, reject) => {
       try {
         Object.keys(body).forEach((key) => {
           if (body[key] === undefined) delete body[key];
         });
+        body.updatedBy = {
+          _id: user?._id,
+          name: user?.name,
+          avatar: user?.avatar,
+        };
         const item = await Model.findOne({_id: params.id});
         if (!item) {
           return reject(

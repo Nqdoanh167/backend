@@ -5,7 +5,7 @@ const getBlog = require('./blog');
 // call parallel api
 async function main() {
   const connectMongoose = async () => {
-    await mongoose.connect('mongodb://0.0.0.0:27017/blog-service');
+    await mongoose.connect('mongodb+srv://nqdcntt2002:doanh2002716@cluster0.jbpwspc.mongodb.net/blog-service');
   };
 
   await connectMongoose();
