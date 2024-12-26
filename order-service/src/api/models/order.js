@@ -61,6 +61,7 @@ const orderSchema = new Schema(
     },
   },
   {
+    autoIndex: true,
     timestamps: true,
   },
 );
@@ -69,6 +70,8 @@ orderSchema.pre('save', function (next) {
   this.isShipment = ['shipping', 'delivered', 'confirmed', 'completed'].includes(this.status);
   next();
 });
+
+orderSchema.index({code: 'text'});
 
 orderSchema.methods = {
   view() {

@@ -13,7 +13,6 @@ const socketService = (server) => {
 
   io.use(async (socket, next) => {
     const {token} = socket.handshake.auth;
-    console.log({token});
     let user = null;
     if (token) {
       user = await getUserInfo(token);

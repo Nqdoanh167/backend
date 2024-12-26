@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 // const fetchBrands = require('./brand');
 // const fetchColor = require('./color');
 // const fetchSize = require('./size');
-const getProduct = require('./category');
+const getProduct = require('./product');
 // call parallel api
 async function main() {
   const connectMongoose = async () => {

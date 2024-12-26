@@ -13,17 +13,22 @@ router.get(
   '/',
   query({
     limit: {
-      type: Number,
+      type: String,
       default: 20,
     },
     page: {
-      type: Number,
+      type: String,
       default: 1,
+    },
+    search: {
+      type: String,
+      paths: ['search'],
     },
     status: {
       type: String,
       paths: ['status'],
     },
+
     price: {
       type: Array,
       paths: ['items.price'],

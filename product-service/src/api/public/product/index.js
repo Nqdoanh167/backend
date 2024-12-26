@@ -18,7 +18,7 @@ const {
 } = require('./controller');
 
 router.get('/my-wishlist', token, query({}), getMyWishlist);
-router.post('/', token, admin, body(productCreateDto), create);
+router.post('/', body(productCreateDto), create);
 router.get(
   '/',
   query({

@@ -37,12 +37,18 @@ const create =
 const index =
   (Model) =>
   ({querymen: {query, select, cursor}}, res, next) => {
+    cursor.skip = (+query.page - 1) * +cursor.limit;
+    if (query.search) {
+      query.$text = {$search: query.search};
+      delete query.search;
+    }
     Model.countDocuments(query)
       .lean()
       .then((total) => {
         if (!total) {
           return {data: [], total};
         }
+
         return Model.find(query, select, cursor).then((docs) => ({
           total,
           results: docs.length,

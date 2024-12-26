@@ -62,6 +62,75 @@ const login = async ({bodymen: {body}}, res, next) => {
     .catch(next);
 };
 
+const loginAdmin = async ({bodymen: {body}}, res, next) => {
+  new Promise(async (resolve, reject) => {
+    try {
+      Object.keys(body).forEach((key) => {
+        if (body[key] === undefined) {
+          delete body[key];
+        }
+      });
+
+      const {email, password} = body;
+      const existingUser = await User.findOne({email});
+      if (existingUser) {
+        const match = await bcrypt.compare(password, existingUser.password);
+        if (match) {
+          if (existingUser.role !== 'admin') {
+            return reject(
+              new Error(
+                JSON.stringify({
+                  status: 400,
+                  statusText: 'NOT_PERMISSION',
+                  message: 'Không đủ quyền truy cập',
+                }),
+              ),
+            );
+          }
+          const token = await generateToken(existingUser, res);
+          return resolve({user: existingUser, token});
+        } else {
+          return reject(
+            new Error(
+              JSON.stringify({
+                status: 400,
+                statusText: 'PASSWORD_NOT_MATCH',
+                message: 'Mật khẩu không đúng',
+              }),
+            ),
+          );
+        }
+      } else {
+        return reject(
+          new Error(
+            JSON.stringify({
+              status: 400,
+              statusText: 'USER_NOT_FOUND',
+              message: 'Sai tên đăng nhập hoặc mật khẩu',
+            }),
+          ),
+        );
+      }
+    } catch (error) {
+      return reject(
+        new Error(
+          JSON.stringify({
+            status: 500,
+            statusText: 'ERROR',
+            message: 'Lỗi không xác định',
+          }),
+        ),
+      );
+    }
+  })
+    .then(({user, token}) => ({
+      token,
+      data: user.view(),
+    }))
+    .then(success(res))
+    .catch(next);
+};
+
 const register = async ({bodymen: {body}}, res, next) => {
   new Promise(async (resolve, reject) => {
     try {
@@ -167,4 +236,4 @@ const logout = async (req, res) => {
   } catch (error) {}
 };
 
-module.exports = {login, register, getToken, logout};
+module.exports = {login, register, getToken, logout, loginAdmin};

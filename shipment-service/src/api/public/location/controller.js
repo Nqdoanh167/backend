@@ -5,9 +5,9 @@ const {location} = require('../../../config');
 const axios = require('axios');
 const getCities = async (req, res) => {
   try {
-    const response = await axios.get(`${location.url}/cities`, {
+    const response = await axios.get(`${location?.url}/cities`, {
       headers: {
-        Authorization: `Bearer ${location.token}`,
+        Authorization: `Bearer ${location?.token}`,
         'Content-Type': 'application/json',
       },
     });
@@ -19,9 +19,9 @@ const getCities = async (req, res) => {
 const getDistricts = async (req, res) => {
   try {
     const {code} = req.params;
-    const response = await axios.get(`${location.url}/cities/${code}/districts`, {
+    const response = await axios.get(`${location?.url}/cities/${code}/districts`, {
       headers: {
-        Authorization: `Bearer ${location.token}`,
+        Authorization: `Bearer ${location?.token}`,
         'Content-Type': 'application/json',
       },
     });

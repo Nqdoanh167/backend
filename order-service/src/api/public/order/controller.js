@@ -53,7 +53,6 @@ const create = ({bodymen: {body}, user}, res, next) => {
           },
         });
 
-        console.log('dasssssssssssss');
         const url = `http://localhost:3000/order/${res.data._id}`;
         await new EmailService(res.data.customer, url)
           .sendWelcome()
@@ -63,7 +62,6 @@ const create = ({bodymen: {body}, user}, res, next) => {
           .catch((err) => {
             console.log(err);
           });
-        console.log('dasssssssssssss');
         // io.to(res.data.customer?._id).emit('ORDER_CREATED', {
         //   order: res.data,
         //   message: `Đơn hàng ${res.data.code} đã tạo thành công!`,

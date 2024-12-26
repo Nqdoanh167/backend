@@ -15,19 +15,21 @@ const config = {
     port: process.env.PORT || 8002,
     ip: process.env.IP || 'localhost',
     apiRoot: process.env.API_ROOT || '/api',
-    service: requireProcessEnv('SERVICE'),
-    serviceToken: requireProcessEnv('SERVICE_TOKEN'), // product-service
-    apiEndpoint: requireProcessEnv('API_ENDPOINT'),
-    jwtSecret: requireProcessEnv('JWT_SECRET'),
+    service: process.env.SERVICE,
+    serviceToken: process.env.SERVICE_TOKEN,
+    apiEndpoint: process.env.API_ENDPOINT,
+    jwtSecret: process.env.JWT_SECRET,
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN,
     cloudinaryConfig: {
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
     },
+    authToken: process.env.AUTH_TOKEN,
   },
   development: {
     mongo: {
-      uri: process.env.MONGODB_URI || 'mongodb://localhost/backend',
+      uri: process.env.MONGODB_URI || 'mongodb+srv://nqdcntt2002:doanh2002716@cluster0.jbpwspc.mongodb.net',
     },
   },
 };
