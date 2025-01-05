@@ -12,7 +12,16 @@ function generateOrderCode() {
   return `${prefix}${randomNumber}`;
 }
 
+const sanitizeBody = (body) => {
+  Object.keys(body).forEach((key) => {
+    if (body[key] === undefined) {
+      delete body[key];
+    }
+  });
+};
+
 module.exports = {
   generateCode,
   generateOrderCode,
+  sanitizeBody,
 };

@@ -3,6 +3,8 @@ const {Schema: bodySchema} = require('bodymen');
 const {Schema: querySchema} = require('querymen');
 const {Order, orderUpdateDTO} = require('../../models/order');
 const {notFoundBackdoor, successBackdoor} = require('../../../services/response');
+const {getIO} = require('../../../services/socket');
+const EmailService = require('../../../services/mail');
 
 const queryValidator = (query, schema) => {
   return new Promise((resolve, reject) => {
@@ -66,7 +68,25 @@ const updateOneOrder = async (bodyData) => {
     order.status = bodyData.query.data.status;
 
     const updated = await order.save();
+
     result.data = updated.view(true);
+
+    const io = getIO();
+    io.to(updated.customer?._id).emit('ORDER_UPDATED', {
+      order: updated,
+      message: `Đơn hàng ${updated.code} vừa được cập nhật!`,
+    });
+
+    if (updated.status === 'completed') {
+      await new EmailService(updated.customer)
+        .notifyOrder()
+        .then(() => {
+          console.log('send mail success');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     result = successBackdoor({queryParams: bodyData.query, data: result});
   } catch (err) {
     result = notFoundBackdoor({

@@ -11,7 +11,16 @@ const {create, update} = require('./controller');
 const router = new Router();
 
 router.post('/', token, body(shipmentCreateDto), create);
-router.get('/', query({}), FactoryController.index(Shipment));
+router.get(
+  '/',
+  query({
+    search: {
+      type: String,
+      paths: ['search'],
+    },
+  }),
+  FactoryController.index(Shipment),
+);
 router.put('/:id', token, body(shipmentUpdateDto), update);
 router.delete('/:id', token, FactoryController.destroy(Shipment));
 

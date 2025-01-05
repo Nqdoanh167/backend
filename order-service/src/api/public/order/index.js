@@ -12,14 +12,6 @@ router.post('/', body(orderCreateDTO), create);
 router.get(
   '/',
   query({
-    limit: {
-      type: String,
-      default: 20,
-    },
-    page: {
-      type: String,
-      default: 1,
-    },
     search: {
       type: String,
       paths: ['search'],

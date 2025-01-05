@@ -1,20 +1,19 @@
 /** @format */
 
 const {success} = require('../../../services/response');
-const {generateOrderCode} = require('../../../utils/util');
+const {generateOrderCode, sanitizeBody} = require('../../../utils/util');
 const {Order} = require('../../models/order');
 const productService = require('../../../services/axios/product');
 const shipmentService = require('../../../services/axios/shipment');
+const userService = require('../../../services/axios/user');
 const {getIO} = require('../../../services/socket');
 const EmailService = require('../../../services/mail');
+const {Status} = require('../../models/status');
+const _cloneDeep = require('lodash/cloneDeep');
 const create = ({bodymen: {body}, user}, res, next) => {
   new Promise(async (resolve, reject) => {
     try {
-      Object.keys(body).forEach((key) => {
-        if (body[key] === undefined) {
-          delete body[key];
-        }
-      });
+      sanitizeBody(body);
       if (!body.status) body.status = 'created';
       if (!body.payment_type) body.payment_type = 'cod';
       body.code = generateOrderCode();
@@ -37,48 +36,44 @@ const create = ({bodymen: {body}, user}, res, next) => {
       );
     }
   })
-    .then((item) => ({data: item.view()}))
-    .then(success(res))
-    .then(async (res) => {
-      if (res.data.isShipment) {
-        await updateProduct(res.data);
+    .then(async (order) => {
+      const io = getIO();
+      const adminIds = await userService.getAdminIds();
+      adminIds.map((adminId) => {
+        io.to(adminId?._id).emit('ORDER_CREATED', {
+          order: order,
+          message: `Đơn hàng ${order.code} vừa được tạo!`,
+        });
+      });
+
+      const statusData = await Status.findOne({code: order.status}).lean();
+
+      if (statusData?.isShipment) {
+        await updateProduct(order);
         await shipmentService.createOne({
-          carrier: res.data.carrier,
-          cod: res.data.total_price,
+          carrier: order.carrier,
+          cod: order.totalAmountAwaitPaid,
           order: {
-            _id: res.data._id,
-            code: res.data.code,
-            items: res.data.items,
-            customer: res.data.customer,
+            _id: order._id,
+            code: order.code,
+            items: order.items,
+            customer: order.customer,
           },
         });
-
-        const url = `http://localhost:3000/order/${res.data._id}`;
-        await new EmailService(res.data.customer, url)
-          .sendWelcome()
-          .then(() => {
-            console.log('send mail success');
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-        // io.to(res.data.customer?._id).emit('ORDER_CREATED', {
-        //   order: res.data,
-        //   message: `Đơn hàng ${res.data.code} đã tạo thành công!`,
-        // });
       }
+
+      return order;
     })
+    .then((item) => ({data: item.view()}))
+    .then(success(res))
     .catch(next);
 };
 
 const update = ({params, bodymen: {body}, user}, res, next) => {
+  let oldOrder = null;
   new Promise(async (resolve, reject) => {
     try {
-      Object.keys(body).forEach((key) => {
-        if (body[key] === undefined) {
-          delete body[key];
-        }
-      });
+      sanitizeBody(body);
 
       const order = await Order.findOne({_id: params.id});
       if (!order) {
@@ -93,6 +88,8 @@ const update = ({params, bodymen: {body}, user}, res, next) => {
         );
       }
 
+      oldOrder = _cloneDeep(order);
+
       let bodyUpdate = {
         ...body,
         customer: {
@@ -100,7 +97,10 @@ const update = ({params, bodymen: {body}, user}, res, next) => {
           ...body.customer,
         },
       };
-      if (order.isShipment || order.status === 'confirmed') {
+
+      const statusData = await Status.findOne({code: order.status}).lean();
+
+      if (statusData?.isShipment) {
         bodyUpdate = {
           status: body.status,
         };
@@ -124,40 +124,45 @@ const update = ({params, bodymen: {body}, user}, res, next) => {
       );
     }
   })
-    .then((item) => ({data: item.view()}))
-    .then(success(res))
-    .then(async (res) => {
-      if (res.data.isShipment) {
-        await updateProduct(res.data);
+
+    .then(async (order) => {
+      const io = getIO();
+      io.to(order.customer?._id).emit('ORDER_UPDATED', {
+        order: order,
+        message: `Đơn hàng ${order.code} vừa được cập nhật!`,
+      });
+
+      if (order.status === 'completed' && oldOrder?.status !== 'completed') {
+        await new EmailService(order.customer)
+          .notifyOrder()
+          .then(() => {
+            console.log('send mail success');
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
+      const statusOldOrder = await Status.findOne({code: oldOrder?.status}).lean();
+      const statusNewOrder = await Status.findOne({code: order?.status}).lean();
+      if (!statusOldOrder?.isShipment && statusNewOrder.isShipment) {
+        await updateProduct(order);
         await shipmentService.createOne({
-          carrier: res.data.carrier,
-          cod: res.data.total_price,
+          status: order.status === 'created' ? null : order.status,
+          carrier: order.carrier,
+          cod: order.totalAmountAwaitPaid,
           order: {
-            _id: res.data._id,
-            code: res.data.code,
-            items: res.data.items,
-            customer: res.data.customer,
+            _id: order._id,
+            code: order.code,
+            items: order.items,
+            customer: order.customer,
           },
         });
-
-        const io = getIO();
-        io.to(res.data.customer?._id).emit('ORDER_UPDATED', {
-          order: res.data,
-          message: `Đơn hàng ${res.data.code} đã cập nhật thành công!`,
-        });
-
-        if (res.data.status === 'completed') {
-          await new EmailService(res.data.customer)
-            .notifyOrder()
-            .then(() => {
-              console.log('send mail success');
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        }
       }
+      return order;
     })
+    .then((item) => ({data: item.view()}))
+    .then(success(res))
     .catch(next);
 };
 
@@ -182,7 +187,7 @@ const updateProduct = async (order) => {
           JSON.stringify({
             status: 404,
             statusText: 'NOT_FOUND',
-            message: `Product ${item.code} không tồn tại`,
+            message: `Product ${item.code} không đủ hàng`,
           }),
         );
       }

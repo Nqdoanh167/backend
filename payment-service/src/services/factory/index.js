@@ -16,7 +16,6 @@ const create =
           name: user?.name,
           avatar: user?.avatar,
         };
-
         return resolve(Model.create(body));
       } catch (error) {
         return reject(
@@ -36,21 +35,13 @@ const create =
   };
 const index =
   (Model) =>
-  ({user, querymen: {query, select, cursor}}, res, next) => {
-    if (user && user?.role !== 'admin') {
-      query['updatedBy.id'] = user?._id;
-    }
-    if (query.search) {
-      query.$text = {$search: query.search};
-      delete query.search;
-    }
+  ({querymen: {query, select, cursor}}, res, next) => {
     Model.countDocuments(query)
       .lean()
       .then((total) => {
         if (!total) {
           return {data: [], total};
         }
-
         return Model.find(query, select, cursor).then((docs) => ({
           total,
           results: docs.length,
@@ -90,13 +81,11 @@ const update =
             ),
           );
         }
-
         body.updatedBy = {
           _id: user?._id,
           name: user?.name,
           avatar: user?.avatar,
         };
-
         return resolve(Object.assign(item, body).save());
       } catch (error) {
         return reject(new Error(JSON.stringify({item: 500, message: error.toString()})));

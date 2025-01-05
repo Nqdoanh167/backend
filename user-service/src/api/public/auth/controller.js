@@ -236,4 +236,26 @@ const logout = async (req, res) => {
   } catch (error) {}
 };
 
-module.exports = {login, register, getToken, logout, loginAdmin};
+const getAdminIds = async (req, res, next) => {
+  new Promise(async (resolve, reject) => {
+    try {
+      const adminIds = await User.find({role: 'admin'}).select('_id').lean();
+      return resolve(adminIds);
+    } catch (error) {
+      return reject(
+        new Error(
+          JSON.stringify({
+            status: 500,
+            statusText: 'ERROR',
+            message: 'Lỗi không xác định',
+          }),
+        ),
+      );
+    }
+  })
+    .then((adminIds) => ({data: adminIds}))
+    .then(success(res))
+    .catch(next);
+};
+
+module.exports = {login, register, getToken, logout, loginAdmin, getAdminIds};

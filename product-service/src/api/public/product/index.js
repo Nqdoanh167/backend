@@ -6,16 +6,7 @@ const {middleware: query} = require('querymen');
 const {productCreateDto, productUpdateDto} = require('../../models/product');
 const {token, admin} = require('../../../services/auth');
 const router = new Router();
-const {
-  create,
-  index,
-  show,
-  update,
-  destroy,
-  getManyByVariantCodes,
-  getByVariantCode,
-  getMyWishlist,
-} = require('./controller');
+const {create, index, show, update, destroy, getManyByVariantCodes, getMyWishlist} = require('./controller');
 
 router.get('/my-wishlist', token, query({}), getMyWishlist);
 router.post('/', body(productCreateDto), create);
@@ -46,6 +37,24 @@ router.get(
       type: String,
       paths: ['createdAt'],
       default: '-createdAt',
+    },
+    priceFrom: {
+      type: Number,
+      paths: ['price'],
+      operator: '$gte',
+    },
+    priceTo: {
+      type: Number,
+      paths: ['price'],
+      operator: '$lte',
+    },
+    colors: {
+      type: [String],
+      paths: ['variants.color'],
+    },
+    sizes: {
+      type: [String],
+      paths: ['variants.size'],
     },
   }),
   index,

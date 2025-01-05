@@ -1,7 +1,6 @@
 /** @format */
 
 const {notFound, success} = require('../../../services/response');
-const {generateCode} = require('../../../utils/util');
 const {Product} = require('../../models/product');
 const create = ({bodymen: {body}}, res, next) => {
   new Promise(async (resolve, reject) => {
@@ -32,10 +31,10 @@ const create = ({bodymen: {body}}, res, next) => {
 const index = ({querymen: {query, select, cursor}}, res, next) => {
   const {search} = query;
   if (search) {
-    query.$text = {$search: search};
+    query.title = {$regex: search, $options: 'i'};
     delete query.search;
   }
-  Product.countDocuments(query)
+  Product.countDocuments()
     .lean()
     .then((total) => {
       if (!total) {

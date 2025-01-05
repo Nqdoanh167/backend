@@ -1,9 +1,10 @@
 /** @format */
 
 const {Router} = require('express');
-const {createPaymentUrl} = require('./controller');
+const apiPublic = require('./public');
+
 const router = new Router();
 
-router.post('/', createPaymentUrl);
+router.use('/', apiPublic);
 
 module.exports = router;

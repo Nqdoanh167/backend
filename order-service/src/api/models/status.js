@@ -19,6 +19,10 @@ const statusSchema = new Schema(
       type: String,
       default: '#2077FA',
     },
+    isShipment: {
+      type: Boolean,
+      default: false,
+    },
     updatedBy: {
       _id: String,
       name: String,
@@ -42,6 +46,7 @@ statusSchema.methods = {
       bgColor: this.bgColor,
       updatedBy: this.updatedBy,
       nextStatus: this.nextStatus,
+      isShipment: this.isShipment,
     };
     return full
       ? {
@@ -58,11 +63,13 @@ const statusCreateModel = {
   code: Status.schema.tree.code,
   bgColor: String,
   nextStatus: Status.schema.tree.nextStatus,
+  isShipment: Boolean,
 };
 const statusOrderUpdateModel = {
   name: Status.schema.tree.name,
   bgColor: String,
   nextStatus: Status.schema.tree.nextStatus,
+  isShipment: Boolean,
 };
 
 module.exports = {

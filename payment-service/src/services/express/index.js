@@ -8,39 +8,8 @@ const {errorHandler: bodyErrorHandler} = require('bodymen');
 const {errorHandler: queryErrorHandler} = require('querymen');
 const {env} = require('../../config');
 const cookieParser = require('cookie-parser');
-const httpProxy = require('http-proxy');
-const proxy = httpProxy.createProxyServer();
-
-proxy.on('error', (err, req, res) => {
-  console.error('Proxy error:', err.message);
-  if (!res.headersSent) {
-    res.status(502).json({error: 'Service unavailable'});
-  }
-});
-
-module.exports = (routes) => {
+module.exports = (apiRoot, routes) => {
   const app = express();
-
-  const createProxyRoute = (path, target) => {
-    app.use(path, (req, res, next) => {
-      console.log(`Routing request to ${path}`);
-      proxy.web(req, res, {target}, (err) => {
-        console.error(`Error routing to ${path}:`, err.message);
-        next(err);
-      });
-    });
-  };
-
-  // Định nghĩa các route cho proxy
-  createProxyRoute('/user-service', 'http://localhost:8001');
-  createProxyRoute('/product-service', 'http://localhost:8002');
-  createProxyRoute('/order-service', 'http://localhost:8003');
-  createProxyRoute('/review-service', 'http://localhost:8004');
-  createProxyRoute('/blog-service', 'http://localhost:8005');
-  createProxyRoute('/cart-service', 'http://localhost:8006');
-  createProxyRoute('/shipment-service', 'http://localhost:8007');
-  createProxyRoute('/payment-service', 'http://localhost:8008');
-
   if (['production', 'development', 'beta'].includes(env)) {
     app.use(
       cors({
@@ -55,16 +24,21 @@ module.exports = (routes) => {
   app.use(express.urlencoded({extended: false}));
   app.use(express.json());
   app.use(cookieParser());
-  app.use(routes);
+  app.use(apiRoot, routes);
   app.use(queryErrorHandler);
   app.use(bodyErrorHandler);
 
   app.use((err, req, res, next) => {
     console.log('err global', err);
+    // res.headersSent: Check xem đã trả dữ liệu cho client chưa. Nếu chưa thì chạy tiếp
     if (!res.headersSent) {
       try {
         let error = JSON.parse(err.message);
         console.log('err', error);
+        // if (error.statusCode) {
+        //   resByCode(res, error.statusCode);
+        // } else if (!isNaN(error.status)) {
+        // }
         res.status(error.status).json({
           status: error.status,
           statusText: 'ERROR',
@@ -73,10 +47,9 @@ module.exports = (routes) => {
           message: error.message,
           data: {},
         });
-      } catch (parseError) {
-        if (!res.headersSent) {
-          res.status(400).send(err.message);
-        }
+      } catch (error) {}
+      if (!res.headersSent) {
+        res.status(400).send(err.message);
       }
     }
   });

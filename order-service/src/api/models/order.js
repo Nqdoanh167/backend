@@ -15,7 +15,9 @@ const orderSchema = new Schema(
       name: String,
       avatar: String,
     },
-    total_price: Number,
+    totalAmount: Number,
+    totalAmountPaid: Number,
+    totalAmountAwaitPaid: Number,
     carrier: {
       _id: String,
       name: String,
@@ -29,7 +31,7 @@ const orderSchema = new Schema(
     },
     payment_type: {
       type: String,
-      enum: ['credit_card', 'cod'],
+      enum: ['momo', 'zalo', 'cod'],
       default: 'cod',
     },
     items: [
@@ -55,21 +57,12 @@ const orderSchema = new Schema(
       district: String,
       ward: String,
     },
-    isShipment: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     autoIndex: true,
     timestamps: true,
   },
 );
-
-orderSchema.pre('save', function (next) {
-  this.isShipment = ['shipping', 'delivered', 'confirmed', 'completed'].includes(this.status);
-  next();
-});
 
 orderSchema.index({code: 'text'});
 
@@ -78,7 +71,6 @@ orderSchema.methods = {
     return {
       _id: this._id,
       updatedBy: this.updatedBy,
-      total_price: this.total_price,
       status: this.status,
       payment_type: this.payment_type,
       items: this.items,
@@ -88,13 +80,18 @@ orderSchema.methods = {
       code: this.code,
       carrier: this.carrier,
       isShipment: this.isShipment,
+      totalAmount: this.totalAmount,
+      totalAmountPaid: this.totalAmountPaid,
+      totalAmountAwaitPaid: this.totalAmountAwaitPaid,
     };
   },
 };
 
 const Order = mongoose.model('Order', orderSchema);
 const orderCreateDTO = {
-  total_price: Order.schema.tree.total_price,
+  totalAmount: Order.schema.tree.totalAmount,
+  totalAmountPaid: Order.schema.tree.totalAmountPaid,
+  totalAmountAwaitPaid: Order.schema.tree.totalAmountAwaitPaid,
   payment_type: Order.schema.tree.payment_type,
   items: Order.schema.tree.items,
   customer: Order.schema.tree.customer,
@@ -102,7 +99,9 @@ const orderCreateDTO = {
   status: Order.schema.tree.status,
 };
 const orderUpdateDTO = {
-  total_price: Order.schema.tree.total_price,
+  totalAmount: Order.schema.tree.totalAmount,
+  totalAmountPaid: Order.schema.tree.totalAmountPaid,
+  totalAmountAwaitPaid: Order.schema.tree.totalAmountAwaitPaid,
   payment_type: Order.schema.tree.payment_type,
   items: Order.schema.tree.items,
   customer: Order.schema.tree.customer,

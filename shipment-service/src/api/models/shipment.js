@@ -51,6 +51,7 @@ const shipmentSchema = new Schema(
     cod: Number,
   },
   {
+    autoIndex: true,
     timestamps: true,
   },
 );
@@ -67,6 +68,8 @@ shipmentSchema.methods = {
     };
   },
 };
+
+shipmentSchema.index({code: 'text', 'order.code': 'text'});
 
 const Shipment = mongoose.model('Shipment', shipmentSchema);
 const shipmentCreateDto = {

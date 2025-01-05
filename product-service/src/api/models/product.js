@@ -79,7 +79,7 @@ productSchema.pre('save', function (next) {
   next();
 });
 
-productSchema.index({title: 'text', slug: 'text', description: 'text'});
+// productSchema.index({title: 'text', slug: 'text', description: 'text'});
 
 productSchema.methods = {
   view() {
