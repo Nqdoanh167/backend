@@ -7,9 +7,10 @@ const {categoryCreateDto, categoryUpdateDto} = require('../../models/category');
 const FactoryController = require('../../../services/factory');
 const {Category} = require('../../models/category');
 const {index} = require('./controller');
+const {token} = require('../../../services/auth');
 const router = new Router();
 
-router.post('/', body(categoryCreateDto), FactoryController.create(Category));
+router.post('/', token, body(categoryCreateDto), FactoryController.create(Category));
 router.get('/', query({}), index);
 router.get('/:id', query({}), FactoryController.show(Category));
 router.put('/:id', body(categoryUpdateDto), FactoryController.update(Category));

@@ -38,7 +38,7 @@ const index =
   (Model) =>
   ({user, querymen: {query, select, cursor}}, res, next) => {
     if (user && user?.role !== 'admin') {
-      query['updatedBy.id'] = user?._id;
+      query['updatedBy._id'] = user?._id;
     }
     if (query.search) {
       query.$text = {$search: query.search};

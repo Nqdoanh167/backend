@@ -35,6 +35,7 @@ const categoryCreateDto = {
   thumbnail: Category.schema.tree.thumbnail,
 };
 const categoryUpdateDto = {
+  name: Category.schema.tree.name,
   thumbnail: Category.schema.tree.thumbnail,
 };
 module.exports = {

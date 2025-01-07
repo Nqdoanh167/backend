@@ -16,7 +16,7 @@ const create = ({bodymen: {body}, user}, res, next) => {
       });
       if (item) {
         item.quantity += body.quantity;
-        if (item.quantity >= item.item.inventory) {
+        if (item.quantity > item.item.inventory) {
           return reject(
             new Error(
               JSON.stringify({

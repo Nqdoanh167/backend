@@ -2,15 +2,16 @@
 
 const {Router} = require('express');
 const {success} = require('../../services/response/');
-const {findOneProduct, updateOneProduct} = require('./product/controller');
+const {findOneProduct, updateOneProduct, updateReviewProduct} = require('./product/controller');
 
 const router = new Router();
 
 // Các method hỗ trợ
-const methodName = ['findOneProduct', 'updateOneProduct'];
+const methodName = ['findOneProduct', 'updateOneProduct', 'updateReviewProduct'];
 const method = {
   findOneProduct,
   updateOneProduct,
+  updateReviewProduct,
 };
 router.post('/', (req, res, next) => {
   new Promise(async (resolve, reject) => {

@@ -1,5 +1,6 @@
 /** @format */
 
+const {updateReviewProduct} = require('../axios/product');
 const {notFound, success} = require('../response');
 const create =
   (Model) =>
@@ -31,6 +32,14 @@ const create =
     })
       .then((item) => ({data: item.view()}))
       .then(success(res))
+      .then(async (res) => {
+        await updateReviewProduct({
+          query: {
+            _id: res.data.product_id,
+          },
+          data: res.data,
+        });
+      })
       .catch(next);
   };
 const index =

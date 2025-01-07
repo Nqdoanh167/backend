@@ -36,11 +36,19 @@ const token = async (req, res, next) => {
 
 const admin = async (req, res, next) => {
   try {
+    let token = undefined;
+    const authHeader = req.headers['authorization'];
+    if (authHeader) {
+      token = authHeader.split(' ')[1];
+    }
+    if (req.cookies.token) {
+      token = req.cookies.token;
+    }
     // Assuming you have a user object in the request
-    const user = req.user;
-
+    const user = await getUserInfo(token);
     // Check if the user is an admin
     if (user && user.role === 'admin') {
+      req.user = user;
       next(); // User is an admin, proceed to the next middleware
     } else {
       res.status(403).json({message: 'Access denied. Admins only.'});

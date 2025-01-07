@@ -2,13 +2,15 @@
 
 const axios = require('axios');
 const crypto = require('crypto');
+const {port_ngrok} = require('../../../config');
+const orderService = require('../../../services/axios/order');
 const config = {
   accessKey: 'F8BBA842ECF85',
   secretKey: 'K951B6PE1waDMi640xX08PD3vg6EkVlz',
   orderInfo: 'pay with MoMo',
   partnerCode: 'MOMO',
-  redirectUrl: 'https://www.google.com/',
-  ipnUrl: 'https://4dcc-171-251-212-0.ngrok-free.app/api/momo/callback', //cần dùng ngrok thì momo mới post đến url này được
+  redirectUrl: 'http://localhost:3003/',
+  ipnUrl: `${port_ngrok}/api/momo/callback`, //cần dùng ngrok thì momo mới post đến url này được
   requestType: 'payWithMethod',
   extraData: '',
   orderGroupId: '',
@@ -16,7 +18,7 @@ const config = {
   lang: 'vi',
 };
 
-const paymentWithMomo = async (req, res) => {
+const paymentWithMomo = async ({bodymen: {body}}, res) => {
   let {
     accessKey,
     secretKey,
@@ -31,8 +33,8 @@ const paymentWithMomo = async (req, res) => {
     lang,
   } = config;
 
-  var amount = '10000'; // giá tiền
-  var orderId = partnerCode + new Date().getTime();
+  const {amount, orderId} = body;
+
   var requestId = orderId;
 
   var rawSignature =
@@ -101,9 +103,18 @@ const paymentWithMomo = async (req, res) => {
 };
 
 const callbackWithMomo = async (req, res) => {
-  console.log('callback: ');
-  console.log(req.body);
-  /**
+  const {orderId, amount} = req.body;
+
+  await orderService.updateOne({
+    method: 'updateOneOrder',
+    query: {_id: orderId.split('-')[0]},
+    data: {
+      totalAmountAwaitPaid: 0,
+      totalAmountPaid: amount,
+      payment_type: 'momo',
+    },
+  });
+  /**totalAmountAwaitPaid
    * Dựa vào kết quả này để update trạng thái đơn hàng
    * Kết quả log:
    * {

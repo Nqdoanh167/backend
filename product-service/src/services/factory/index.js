@@ -3,7 +3,7 @@
 const {notFound, success} = require('../response');
 const create =
   (Model) =>
-  ({bodymen: {body}}, res, next) => {
+  ({user, bodymen: {body}}, res, next) => {
     new Promise(async (resolve, reject) => {
       try {
         Object.keys(body).forEach((key) => {

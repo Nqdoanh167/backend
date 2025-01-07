@@ -6,11 +6,13 @@ const {middleware: query} = require('querymen');
 const {Order, orderCreateDTO, orderUpdateDTO} = require('../../models/order');
 const FactoryController = require('../../../services/factory');
 const {create, update} = require('./controller');
+const {token, admin} = require('../../../services/auth');
 const router = new Router();
 
 router.post('/', body(orderCreateDTO), create);
 router.get(
   '/',
+  admin,
   query({
     search: {
       type: String,
@@ -20,36 +22,21 @@ router.get(
       type: String,
       paths: ['status'],
     },
+  }),
+  FactoryController.index(Order),
+);
 
-    price: {
-      type: Array,
-      paths: ['items.price'],
+router.get(
+  '/get-my-orders',
+  token,
+  query({
+    search: {
+      type: String,
+      paths: ['search'],
     },
-    color: {
-      type: Array,
-      paths: ['items.color'],
-    },
-    size: {
-      type: Array,
-      paths: ['items.size'],
-    },
-    'price.from': {
-      type: Number,
-      paths: ['items.price'],
-      operator: '$gte',
-    },
-    'price.to': {
-      type: Number,
-      paths: ['items.price'],
-      operator: '$lte',
-    },
-    color: {
-      type: Array,
-      paths: ['items.color'],
-    },
-    size: {
-      type: Array,
-      paths: ['items.size'],
+    status: {
+      type: String,
+      paths: ['status'],
     },
   }),
   FactoryController.index(Order),

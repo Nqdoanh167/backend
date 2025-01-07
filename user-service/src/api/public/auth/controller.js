@@ -213,11 +213,12 @@ const getToken = async (req, res, next) => {
   try {
     // Giải mã token
     const {user} = jwt.verify(token, config.jwtSecret);
+    const userData = await User.findOne({_id: user._id}).lean();
 
     // Trả thông tin người dùng (chỉ trả các thông tin cần thiết)
     res.json({
       success: true,
-      user,
+      user: userData,
     });
   } catch (error) {
     return res.status(403).json({success: false, message: 'Invalid or expired token', error: error.message});
@@ -258,4 +259,9 @@ const getAdminIds = async (req, res, next) => {
     .catch(next);
 };
 
-module.exports = {login, register, getToken, logout, loginAdmin, getAdminIds};
+const getAdmin = ({user}, res) => {
+  delete user.password;
+  return success(res)({data: user});
+};
+
+module.exports = {login, register, getToken, logout, loginAdmin, getAdminIds, getAdmin};

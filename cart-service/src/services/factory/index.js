@@ -1,5 +1,6 @@
 /** @format */
 
+const {isObjectId} = require('../../utils/util');
 const {notFound, success} = require('../response');
 const create =
   (Model) =>
@@ -101,7 +102,16 @@ const destroy =
   ({params}, res, next) => {
     new Promise(async (resolve, reject) => {
       try {
-        const item = await Model.findOneAndDelete({_id: params.id});
+        const isCheck = isObjectId(params.id);
+        let query = {
+          _id: params.id,
+        };
+        if (!isCheck) {
+          query = {
+            'item.code': params.id,
+          };
+        }
+        const item = await Model.findOneAndDelete(query);
         if (!item) {
           return reject(
             new Error(

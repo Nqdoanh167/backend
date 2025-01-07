@@ -5,9 +5,10 @@ const {middleware: body} = require('bodymen');
 const {middleware: query} = require('querymen');
 const {Property, propertyCreateDto, propertyUpdateDto} = require('../../models/property');
 const FactoryController = require('../../../services/factory');
+const {token} = require('../../../services/auth');
 const router = new Router();
 
-router.post('/', body(propertyCreateDto), FactoryController.create(Property));
+router.post('/', token, body(propertyCreateDto), FactoryController.create(Property));
 router.get('/', query({}), FactoryController.index(Property));
 router.get('/:id', query({}), FactoryController.show(Property));
 router.put('/:id', body(propertyUpdateDto), FactoryController.update(Property));

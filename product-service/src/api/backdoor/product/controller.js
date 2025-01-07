@@ -150,7 +150,83 @@ const updateOneProduct = async (bodyData) => {
   return result;
 };
 
+const updateReviewProduct = async (bodyData) => {
+  let result = {};
+
+  const queryModel = {
+    _id: String,
+  };
+
+  const handlerValidatorQuery = await queryValidator(bodyData.query, queryModel);
+  if (!handlerValidatorQuery.valid) {
+    return notFoundBackdoor({
+      queryParams: bodyData.query,
+      status: 422,
+      statusText: 'BAD_USER_INPUT',
+      data: handlerValidatorQuery,
+    });
+  }
+
+  const {
+    querymen: {query, select, cursor},
+  } = handlerValidatorQuery;
+
+  // const bodyModel = {
+  //   ...productUpdateDto,
+  // };
+
+  // const handlerValidatorBody = await bodyValidator(bodyData.data, bodyModel);
+  // if (!handlerValidatorBody.valid) {
+  //   return notFoundBackdoor({
+  //     bodyParams: bodyData.data,
+  //     status: 422,
+  //     statusText: 'BAD_USER_INPUT',
+  //     data: handlerValidatorBody,
+  //   });
+  // }
+  // const {body} = handlerValidatorBody;
+  // console.log({body});
+
+  try {
+    const product = await Product.findOne(query);
+    if (!product) {
+      return notFoundBackdoor({
+        queryParams: bodyData.query,
+        status: 404,
+        statusText: 'NOT_FOUND',
+        data: handlerValidatorQuery,
+      });
+    }
+
+    await product.calculateAverageRating(newRating);
+
+    // product.variants = product.variants.map((v) => {
+    //   if (v.code === bodyData.data.variants.code) {
+    //     return {
+    //       ...v,
+    //       ...bodyData.data.variants,
+    //     };
+    //   }
+    //   return v;
+    // });
+    // const updated = await product.save();
+    result.data = updated.view(true);
+    result = successBackdoor({queryParams: bodyData.query, data: result});
+  } catch (err) {
+    result = notFoundBackdoor({
+      queryParams: bodyData.query,
+      bodyParams: bodyData.data,
+      message: err.toString(),
+      status: 500,
+      statusText: 'ERROR',
+    });
+  }
+
+  return result;
+};
+
 module.exports = {
   findOneProduct,
   updateOneProduct,
+  updateReviewProduct,
 };

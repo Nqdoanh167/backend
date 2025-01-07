@@ -5,9 +5,10 @@ const {Schema} = mongoose;
 
 const reviewSchema = new Schema(
   {
-    user_id: {
-      type: String,
-      required: true,
+    updatedBy: {
+      _id: String,
+      name: String,
+      avatar: String,
     },
     product_id: {
       type: String,
@@ -25,7 +26,7 @@ reviewSchema.methods = {
   view() {
     return {
       _id: this._id,
-      user_id: this.user_id,
+      updatedBy: this.updatedBy,
       product_id: this.product_id,
       content: this.content,
       starRating: this.starRating,

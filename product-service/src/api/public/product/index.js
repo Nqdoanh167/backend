@@ -80,7 +80,7 @@ router.get(
   show,
 );
 
-router.put('/:id', token, admin, body(productUpdateDto), update);
-router.delete('/:id', token, admin, destroy);
+router.put('/:id', admin, body(productUpdateDto), update);
+router.delete('/:id', admin, destroy);
 
 module.exports = router;

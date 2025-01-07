@@ -210,4 +210,5 @@ const updateProduct = async (order) => {
 module.exports = {
   create,
   update,
+  updateProduct,
 };

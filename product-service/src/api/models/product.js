@@ -22,7 +22,7 @@ const productSchema = new Schema(
     brand: String,
     averageRating: {
       type: Number,
-      default: 4.5,
+      default: 0,
     },
     // số lượng người đánh giá
     quantityRating: {
@@ -79,6 +79,19 @@ productSchema.pre('save', function (next) {
   next();
 });
 
+productSchema.methods.calculateAverageRating = function (newRating) {
+  // Tính tổng điểm hiện tại
+  const totalRating = this.averageRating * this.quantityRating;
+
+  // Cập nhật số lượng người đánh giá
+  this.quantityRating += 1;
+
+  // Tính toán trung bình mới và làm tròn tới 1 số thập phân
+  this.averageRating = parseFloat(((totalRating + newRating) / this.quantityRating).toFixed(1));
+
+  return this.save(); // Lưu lại vào cơ sở dữ liệu
+};
+
 // productSchema.index({title: 'text', slug: 'text', description: 'text'});
 
 productSchema.methods = {
@@ -95,6 +108,7 @@ productSchema.methods = {
       quantity_sold: this.quantity_sold,
       variants: this.variants,
       price: this.price,
+      entryPrice: this.entryPrice,
       images: this.images,
       status: this.status,
     };

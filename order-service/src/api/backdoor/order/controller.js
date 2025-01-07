@@ -65,7 +65,11 @@ const updateOneOrder = async (bodyData) => {
       });
     }
 
-    order.status = bodyData.query.data.status;
+    const {status, totalAmountAwaitPaid, payment_type, totalAmountPaid} = bodyData.query.data;
+    if (status) order.status = status;
+    order.totalAmountAwaitPaid = totalAmountAwaitPaid;
+    order.totalAmountPaid = totalAmountPaid;
+    if (payment_type) order.payment_type = payment_type;
 
     const updated = await order.save();
 

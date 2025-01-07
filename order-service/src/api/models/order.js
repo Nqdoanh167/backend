@@ -102,7 +102,7 @@ const orderUpdateDTO = {
   totalAmount: Order.schema.tree.totalAmount,
   totalAmountPaid: Order.schema.tree.totalAmountPaid,
   totalAmountAwaitPaid: Order.schema.tree.totalAmountAwaitPaid,
-  payment_type: Order.schema.tree.payment_type,
+  // payment_type: Order.schema.tree.payment_type,
   items: Order.schema.tree.items,
   customer: Order.schema.tree.customer,
   status: Order.schema.tree.status,
