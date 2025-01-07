@@ -56,6 +56,10 @@ router.get(
       type: [String],
       paths: ['variants.size'],
     },
+    categories: {
+      type: [String],
+      paths: ['category'],
+    },
   }),
   index,
 );

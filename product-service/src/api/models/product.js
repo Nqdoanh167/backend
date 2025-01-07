@@ -27,7 +27,7 @@ const productSchema = new Schema(
     // số lượng người đánh giá
     quantityRating: {
       type: Number,
-      default: 1,
+      default: 0,
     },
     quantity_sold: {
       type: Number,
